@@ -1,4 +1,4 @@
-enum category {
+export enum category {
   food,
   transport,
   sport,
@@ -6,8 +6,21 @@ enum category {
   entertainment,
 }
 
-export const FAKE_YEAR_DATA = [
+export interface IExpense {
+  id: string
+  name: string
+  category: category
+  value: number
+}
+export interface IData {
+  id: string
+  date: string
+  expense: IExpense[]
+}
+
+export const FAKE_YEAR_DATA: IData[] = [
   {
+    id: 'rerer',
     date: '01-05-2021',
     expense: [
       { id: 'aa1', name: 'coffee', category: category.food, value: 2.5 },
@@ -17,6 +30,7 @@ export const FAKE_YEAR_DATA = [
     ]
   },
   {
+    id: 'rerer22',
     date: '02-05-2021',
     expense: [
       { id: 'bb1', name: 'coffee', category: category.food, value: 2.5 },
@@ -26,6 +40,7 @@ export const FAKE_YEAR_DATA = [
     ]
   },
   {
+    id: 'rereras33',
     date: '03-05-2021',
     expense: [
       { id: 'aazzz1', name: 'coffee', category: category.food, value: 4.5 },

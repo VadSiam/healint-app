@@ -5,7 +5,7 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
+import TableCell, { SortDirection } from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import { category, FAKE_YEAR_DATA, IData, IExpense } from '../../utils/sample-data';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 const useRowStyles = makeStyles({
   root: {
@@ -22,32 +24,40 @@ const useRowStyles = makeStyles({
   },
 });
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number,
-) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      { date: '2020-01-05', customerId: '11091700', amount: 3 },
-      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
-    ],
-  };
+const sumByMonth = (expenses: IExpense[]): number => {
+  return expenses.reduce((acc: number, item: IExpense) => acc + item.value, 0)
 }
 
-function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
+interface IRow {
+  row: IData
+}
+
+const Row: React.FC<IRow> = ({ row }) => {
+  const [order, setOrder] = React.useState<SortDirection>('asc');
+  const [orderBy, setOrderBy] = React.useState<keyof IExpense>('category');
+  const onChangeOrder = React.useCallback((key: keyof IExpense) => {
+    setOrderBy(key);
+    setOrder((orderState) => {
+      if (orderState === 'asc') {
+        return 'desc';
+      }
+      return 'asc';
+    });
+  }, [])
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+
+  const sortedSubRows = React.useMemo(() => {
+    return row?.expense?.sort((expA, expB) => {
+      if (orderBy === 'value') {
+        return (
+          (order === 'asc') 
+          ? (expA.value - expB.value) 
+          : (expB.value - expA.value)
+        )
+      }
+    })
+  }, [row, orderBy, order])
 
   return (
     <React.Fragment>
@@ -58,39 +68,61 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          {row.date}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell align="right">{sumByMonth(row.expense)}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
-                History
+                Details
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell sortDirection={order}>
+                      <TableSortLabel
+                        active={orderBy === 'name'}
+                        direction={order || 'asc'}
+                        onClick={() => onChangeOrder('name')}
+                      >
+                        Name Expense
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell sortDirection={order}>
+                      <TableSortLabel
+                        active={orderBy === 'category'}
+                        direction={order || 'asc'}
+                        onClick={() => onChangeOrder('category')}
+                      >
+                        Category
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell 
+                      align="right"
+                      sortDirection={order}
+                    >
+                      <TableSortLabel
+                        active={orderBy === 'value'}
+                        direction={order || 'asc'}
+                        onClick={() => onChangeOrder('value')}
+                      >
+                        Total price ($)
+                      </TableSortLabel>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
+                  {sortedSubRows.map((detailRow) => (
+                    <TableRow key={detailRow.id}>
                       <TableCell component="th" scope="row">
-                        {historyRow.date}
+                        {detailRow.name}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell>{category[detailRow.category]}</TableCell>
                       <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                        {detailRow.value}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -104,34 +136,25 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   );
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
-
-export default function CollapsibleTable() {
+const CollapsibleTable: React.FC = () => {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell align="right">Amount($)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
+          {FAKE_YEAR_DATA.map((row) => (
+            <Row key={row.id} row={row} />
           ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
 }
+
+export default CollapsibleTable;
