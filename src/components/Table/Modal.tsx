@@ -70,7 +70,7 @@ const FormModal = () => {
       })
     }
     return ({
-      date: '',
+      date: format(new Date (), DATE_FORMAT),
       name: '',
       category: category.food,
       value: 0,
@@ -147,7 +147,8 @@ const FormModal = () => {
 
   const onSubmit = React.useCallback(() => {
     const isError = Object.values(valuesError).some(v => v);
-    if (isError) {
+    const isEmptyString = Object.values(values).some(v => !v);
+    if (isError || isEmptyString) {
       return;
     }
     if (!!openModalId.id) {
@@ -171,7 +172,6 @@ const FormModal = () => {
       })
     }
     handleClose();
-    console.log('🚀 ~ file: Modal.tsx ~ line 109 ~ FormModal ~ values', values);
   }, [values, valuesError])
 
   return (
@@ -187,12 +187,11 @@ const FormModal = () => {
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               disableToolbar
-              variant="inline"
               format={DATE_FORMAT}
               margin="normal"
               id="date-picker-inline"
               label="Date"
-              value={new Date(values?.date ?? '')}
+              value={new Date(values?.date ?? new Date())}
               onChange={handleChangeDate}
               KeyboardButtonProps={{
                 'aria-label': 'change date',

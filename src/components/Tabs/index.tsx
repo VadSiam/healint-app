@@ -22,7 +22,10 @@ const TabsComponent = () => {
       >
         <Tab label={DAILY} />
         <Tab label={MONTHLY} />
-        <Tab label={YEARLY} />
+        <Tab 
+          disabled
+          label={YEARLY} 
+        />
       </Tabs>
     </Paper>
   );

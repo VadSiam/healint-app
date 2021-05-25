@@ -17,6 +17,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import PlusOneOutlinedIcon from '@material-ui/icons/PlusOneOutlined';
 import MoneyTwoTone from '@material-ui/icons/MoneyTwoTone';
 import LayersIcon from '@material-ui/icons/Layers';
 import Chart from '../components/Charts';
@@ -25,12 +26,27 @@ import TabsComponent from '../components/Tabs';
 import { MainContext } from '../utils/context';
 import { DAILY, MONTHLY, YEARLY } from '../utils/constants';
 import FormModal from '../components/Table/Modal';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import { green } from '@material-ui/core/colors';
 
 const drawerWidth = 240;
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+  },
+  green: {
+    color: '#fff',
+    backgroundColor: green[500],
+  },
+  large: {
+    width: theme.spacing(10),
+    height: theme.spacing(10),
+  },
+  textToRight: {
+    marginLeft: 20,
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -108,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = () => {
-  const { tab, setTab } = React.useContext(MainContext);
+  const { tab, setTab, setOpenModalId } = React.useContext(MainContext);
   console.log('🚀 ~ file: index.tsx ~ line 109 ~ Home ~ tab', tab);
   const handleChange = React.useCallback((newValue: number) => {
     setTab(newValue);
@@ -141,11 +157,6 @@ const Home = () => {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             My Expense Tracker
           </Typography>
-          {/* <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton> */}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -161,12 +172,33 @@ const Home = () => {
           </IconButton>
         </div>
         <Divider />
+        <Divider />
+        <Divider />
+        <ListItem 
+          onClick={() => setOpenModalId({
+            id: '', 
+            date: '',
+            open: true
+          })}
+        >
+          <ListItemAvatar>
+            <Avatar className={classes.green}>
+              <ShoppingCartIcon 
+                color="action" 
+              />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="ADD NEW FACILITY" secondary="Right now" />
+        </ListItem>
+        <Divider />
+        <Divider />
+        <Divider />
         <ListItem 
           onClick={() => handleChange(0)}
           button
         >
           <ListItemIcon>
-            <ShoppingCartIcon />
+            <LayersIcon />
           </ListItemIcon>
           <ListItemText primary={DAILY} />
         </ListItem>
@@ -183,6 +215,7 @@ const Home = () => {
         <Divider />
         <ListItem 
           onClick={() => handleChange(2)}
+          disabled
           button
         >
           <ListItemIcon>
@@ -207,19 +240,33 @@ const Home = () => {
             </Grid>
             <Grid item lg={12}>
               <Paper>
+              <ListItem 
+                onClick={() => setOpenModalId({
+                  id: '', 
+                  date: '',
+                  open: true
+                })}
+              >
+                <ListItemAvatar>
+                  <Avatar className={clsx(classes.green, classes.large)}>
+                    <PlusOneOutlinedIcon 
+                      color="action" 
+                    />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText 
+                  primary="ADD NEW FACILITY" 
+                  secondary="Right now" 
+                  className={classes.textToRight}
+                />
+              </ListItem>
+              </Paper>
+            </Grid>
+            <Grid item lg={12}>
+              <Paper>
                 <Table />
               </Paper>
             </Grid>
-            {/* <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid> */}
-            {/* <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid> */}
           </Grid>
         </Container>
       </main>
