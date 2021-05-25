@@ -1,9 +1,9 @@
 export enum category {
-  food,
-  transport,
-  sport,
-  utilities,
-  entertainment,
+  food = "food",
+  transport = "transport",
+  sport = "sport",
+  utilities = "utilities",
+  entertainment = "entertainment",
 }
 
 export interface IExpense {
@@ -21,7 +21,7 @@ export interface IData {
 export const FAKE_YEAR_DATA: IData[] = [
   {
     id: 'rerer22',
-    date: '02-05-2021',
+    date: '2021-05-02',
     expense: [
       { id: 'bb1', name: 'coffee', category: category.food, value: 2.5 },
       { id: 'aarere1', name: 'breakfast', category: category.food, value: 5 },
@@ -31,7 +31,7 @@ export const FAKE_YEAR_DATA: IData[] = [
   },
   {
     id: 'rerer',
-    date: '01-05-2021',
+    date: '2021-05-01',
     expense: [
       { id: 'aa1', name: 'coffee', category: category.food, value: 2.5 },
       { id: 'aa12', name: 'breakfast', category: category.food, value: 5 },
@@ -41,7 +41,7 @@ export const FAKE_YEAR_DATA: IData[] = [
   },
   {
     id: 'rereras33',
-    date: '03-05-2021',
+    date: '2021-05-03',
     expense: [
       { id: 'aazzz1', name: 'coffee', category: category.food, value: 4.5 },
       { id: 'aqwea1', name: 'breakfast', category: category.food, value: 5 },
