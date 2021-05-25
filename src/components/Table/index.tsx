@@ -48,14 +48,25 @@ const Row: React.FC<IRow> = ({ row }) => {
   const classes = useRowStyles();
 
   const sortedSubRows = React.useMemo(() => {
-    return row?.expense?.sort((expA, expB) => {
+    return row.expense.sort((expA, expB) => {
       if (orderBy === 'value') {
         return (
           (order === 'asc') 
-          ? (expA.value - expB.value) 
-          : (expB.value - expA.value)
+            ? (expA.value - expB.value) 
+            : (expB.value - expA.value)
         )
       }
+      if (orderBy === 'name') {
+        return (order === 'asc') 
+        ? expB.name.localeCompare(expA.name)
+        : expA.name.localeCompare(expB.name);
+      }
+      if (orderBy === 'category') {
+        return (order === 'asc') 
+        ? expA.category.toString().localeCompare(expB.category.toString())
+        : expB.category.toString().localeCompare(expA.category.toString());
+      }
+      return 0;
     })
   }, [row, orderBy, order])
 
