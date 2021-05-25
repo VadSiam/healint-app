@@ -2,8 +2,8 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { DAILY, MONTHLY, YEARLY } from './constants';
-import { MainContext } from '../pages/context';
+import { DAILY, MONTHLY, YEARLY } from '../constants';
+import { MainContext } from '../../utils/context';
 
 const TabsComponent = () => {
   const {tab, setTab} = React.useContext(MainContext);

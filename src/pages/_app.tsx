@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { AppProps } from 'next/app';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from '../theme';
-import { MainProvider } from './context';
+import { MainProvider } from '../utils/context';
 
 export default function MyApp({ 
   Component, 

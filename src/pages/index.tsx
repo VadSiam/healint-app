@@ -20,8 +20,9 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import MoneyTwoTone from '@material-ui/icons/MoneyTwoTone';
 import LayersIcon from '@material-ui/icons/Layers';
 import Chart from '../components/Charts';
+import Table from '../components/Table';
 import TabsComponent from '../components/Tabs';
-import { MainContext } from './context';
+import { MainContext } from '../utils/context';
 import { DAILY, MONTHLY, YEARLY } from '../components/constants';
 
 const drawerWidth = 240;
@@ -200,6 +201,11 @@ const Home = () => {
             <Grid item lg={12}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
+              </Paper>
+            </Grid>
+            <Grid item lg={12}>
+              <Paper>
+                <Table />
               </Paper>
             </Grid>
             {/* <Grid item xs={12} md={4} lg={3}>
