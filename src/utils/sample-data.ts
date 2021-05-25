@@ -20,16 +20,6 @@ export interface IData {
 
 export const FAKE_YEAR_DATA: IData[] = [
   {
-    id: 'rerer',
-    date: '01-05-2021',
-    expense: [
-      { id: 'aa1', name: 'coffee', category: category.food, value: 2.5 },
-      { id: 'aa12', name: 'breakfast', category: category.food, value: 5 },
-      { id: 'aasd1', name: 'metro', category: category.transport, value: 150 },
-      { id: 'aaqwq1', name: 'cinema', category: category.entertainment, value: 10 },
-    ]
-  },
-  {
     id: 'rerer22',
     date: '02-05-2021',
     expense: [
@@ -37,6 +27,16 @@ export const FAKE_YEAR_DATA: IData[] = [
       { id: 'aarere1', name: 'breakfast', category: category.food, value: 5 },
       { id: 'aa14343', name: 'supermarket food', category: category.food, value: 50 },
       { id: 'aa1fcdcd', name: 'fitness', category: category.sport, value: 100 },
+    ]
+  },
+  {
+    id: 'rerer',
+    date: '01-05-2021',
+    expense: [
+      { id: 'aa1', name: 'coffee', category: category.food, value: 2.5 },
+      { id: 'aa12', name: 'breakfast', category: category.food, value: 5 },
+      { id: 'aasd1', name: 'metro', category: category.transport, value: 150 },
+      { id: 'aaqwq1', name: 'cinema', category: category.entertainment, value: 10 },
     ]
   },
   {

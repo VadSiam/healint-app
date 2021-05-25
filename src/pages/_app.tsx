@@ -5,10 +5,10 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import theme from '../theme';
 import { MainProvider } from '../utils/context';
 
-export default function MyApp({ 
+const MyApp = ({ 
   Component, 
   pageProps,
-}: AppProps) {
+}: AppProps) => {
 
   React.useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
@@ -31,3 +31,5 @@ export default function MyApp({
     </React.Fragment>
   );
 }
+
+export default MyApp;

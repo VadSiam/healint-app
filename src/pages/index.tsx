@@ -23,7 +23,8 @@ import Chart from '../components/Charts';
 import Table from '../components/Table';
 import TabsComponent from '../components/Tabs';
 import { MainContext } from '../utils/context';
-import { DAILY, MONTHLY, YEARLY } from '../components/constants';
+import { DAILY, MONTHLY, YEARLY } from '../utils/constants';
+import FormModal from '../components/Table/Modal';
 
 const drawerWidth = 240;
 
@@ -125,6 +126,7 @@ const Home = () => {
   return (
     <div className={classes.root}>
       <CssBaseline />
+      <FormModal />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton

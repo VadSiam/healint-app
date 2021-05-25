@@ -2,7 +2,7 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import Typography from '@material-ui/core/Typography';
 import { MainContext } from '../../utils/context';
-import { TITLE_ARRAY } from '../constants';
+import { TITLE_ARRAY } from '../../utils/constants';
 import { data01, data02 } from '../../utils/sample-data';
 
 
