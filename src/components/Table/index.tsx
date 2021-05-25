@@ -13,8 +13,11 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { category, FAKE_YEAR_DATA, IData, IExpense } from '../../utils/sample-data';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { category, IData, IExpense } from '../../utils/sample-data';
+import { MainContext } from '../../utils/context';
 
 const useRowStyles = makeStyles({
   root: {
@@ -33,6 +36,7 @@ interface IRow {
 }
 
 const Row: React.FC<IRow> = ({ row }) => {
+  const { removeElement } = React.useContext(MainContext);
   const [order, setOrder] = React.useState<SortDirection>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof IExpense>('category');
   const onChangeOrder = React.useCallback((key: keyof IExpense) => {
@@ -111,6 +115,9 @@ const Row: React.FC<IRow> = ({ row }) => {
                         Category
                       </TableSortLabel>
                     </TableCell>
+                    <TableCell>
+                      Actions
+                    </TableCell>
                     <TableCell 
                       align="right"
                       sortDirection={order}
@@ -120,7 +127,7 @@ const Row: React.FC<IRow> = ({ row }) => {
                         direction={order || 'asc'}
                         onClick={() => onChangeOrder('value')}
                       >
-                        Total price ($)
+                        Price ($)
                       </TableSortLabel>
                     </TableCell>
                   </TableRow>
@@ -132,6 +139,21 @@ const Row: React.FC<IRow> = ({ row }) => {
                         {detailRow.name}
                       </TableCell>
                       <TableCell>{category[detailRow.category]}</TableCell>
+                      <TableCell>
+                        <IconButton 
+                          color="primary" 
+                          aria-label="delete"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton 
+                          color="secondary" 
+                          aria-label="delete"
+                          onClick={() => removeElement({ date: row.date, id: detailRow.id })}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
                       <TableCell align="right">
                         {detailRow.value}
                       </TableCell>
@@ -148,6 +170,8 @@ const Row: React.FC<IRow> = ({ row }) => {
 }
 
 const CollapsibleTable: React.FC = () => {
+  const { mainData } = React.useContext(MainContext);
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -159,7 +183,7 @@ const CollapsibleTable: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {FAKE_YEAR_DATA.map((row) => (
+          {mainData.map((row) => (
             <Row key={row.id} row={row} />
           ))}
         </TableBody>
