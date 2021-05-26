@@ -20,6 +20,16 @@ export interface IData {
 
 export const FAKE_YEAR_DATA: IData[] = [
   {
+    id: 'rerer2xx2',
+    date: '2021-04-02',
+    expense: [
+      { id: 'bbss1', name: 'coffee', category: category.food, value: 2.5 },
+      { id: 'aassrere1', name: 'breakfast', category: category.food, value: 5 },
+      { id: 'aad14343', name: 'supermarket food', category: category.food, value: 50 },
+      { id: 'aa1fgcdcd', name: 'fitness', category: category.sport, value: 100 },
+    ]
+  },
+  {
     id: 'rerer22',
     date: '2021-05-02',
     expense: [

@@ -6,6 +6,7 @@ import { TITLE_ARRAY } from '../../utils/constants';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import { IExpense } from '../../utils/sample-data';
 
 
 
@@ -56,6 +57,7 @@ const  Chart = () => {
   const { tab, mainData } = React.useContext(MainContext);
   const title = React.useMemo(() => TITLE_ARRAY[tab], []);
   const [currentDate, setCurrentDate] = React.useState<string>('');
+  const [currentMonth, setCurrentMonth] = React.useState<string>('');
 
   const dailyDataOptions = React.useMemo(() => {
     return mainData.map((data) => ({
@@ -64,18 +66,61 @@ const  Chart = () => {
     }))
   }, [mainData]);
 
+  const montlyDataOptions = React.useMemo(() => {
+    const parsedByMonth = mainData?.reduce((acc, item) => {
+      const getingMonth = item.date.split('-')?.[1];
+      const isMonthExist = acc.find(c => c?.date === getingMonth);
+      if (isMonthExist) {
+        return acc.map(existItem => {
+          if (existItem.date === getingMonth) {
+            return ({
+              ...existItem,
+              expense: [
+                ...existItem.expense,
+                ...item.expense,
+              ],
+            })
+          }
+          return existItem;
+        })
+      }
+      return [
+        ...acc, 
+        {
+          date: getingMonth, 
+          name: getingMonth, 
+          expense: item.expense,
+        }
+      ]
+    }, [{ date: '', expense: [{} as IExpense] }])
+
+    return parsedByMonth.map((data) => ({
+      label: data.date,
+      value: data.date,
+      fullItem: data
+    }))
+  }, [mainData]);
+
   React.useEffect(() => {
     if (!!dailyDataOptions.length) {
       const lastElement = dailyDataOptions[dailyDataOptions.length - 1];
       setCurrentDate(lastElement.value);
     }
-  }, [dailyDataOptions])
+    if (!!montlyDataOptions.length) {
+      const lastElement = montlyDataOptions[montlyDataOptions.length - 1];
+      setCurrentMonth(lastElement.value);
+    }
+  }, [dailyDataOptions, montlyDataOptions])
 
   const handleChangeDate = React.useCallback((date) => {
     setCurrentDate(date.target.value);
   }, [])
 
-  const cartsData = React.useMemo(() => {
+  const handleChangeMonth = React.useCallback((date) => {
+    setCurrentMonth(date.target.value);
+  }, [])
+
+  const chartsData = React.useMemo(() => {
     const currentDateData = mainData.find(d => d.date === currentDate);
     const outerChart = currentDateData?.expense;
     const innerChart = currentDateData?.expense.reduce((acc, item) => {
@@ -97,34 +142,82 @@ const  Chart = () => {
           name: item.category, value: item.value,
         }
       ]
-    }, [{ name: '', value: 0 }])
-    return ({ outerChart, innerChart });
+    }, [{ name: '', value: 0 }])?.filter(chrt => chrt.value)
+    return ({ 
+      outerChart, 
+      innerChart,
+    });
   }, [currentDate, mainData])
+
+  const chartsDataMonth = React.useMemo(() => {
+    const currentMonthData = montlyDataOptions.find(d => d.value === currentMonth);
+    const outerChart = currentMonthData?.fullItem?.expense;
+    const innerChart = currentMonthData?.fullItem?.expense.reduce((acc, item) => {
+      const isCategoryExist = acc.find(c => c?.name === item.category);
+      if (isCategoryExist) {
+        return acc.map(existItem => {
+          if (existItem.name === item.category) {
+            return ({
+              ...existItem,
+              value: (existItem.value + item.value),
+            })
+          }
+          return existItem;
+        })
+      }
+      return [
+        ...acc, 
+        {
+          name: item.category, value: item.value,
+        }
+      ]
+    }, [{ name: '', value: 0 }])?.filter(chrt => chrt.value)
+    return ({ 
+      outerChart: outerChart?.sort((chrtA, chrtB) => chrtA.category.toString().localeCompare(chrtB.category.toString())),
+      innerChart: innerChart?.sort((chrtA, chrtB) => chrtA.name.localeCompare(chrtB.name)),
+    });
+  }, [currentMonth, montlyDataOptions])
 
   return (
     <>
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
         {title}
         <Divider />
-        <TextField
-            id="standard-select-category"
-            select
-            label="Date"
-            value={currentDate}
-            onChange={handleChangeDate}
-            helperText="Please select your Date"
-          >
-          {dailyDataOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
+        {(tab === 0) 
+          ? <TextField
+              id="standard-select-date"
+              select
+              label="Date"
+              value={currentDate}
+              onChange={handleChangeDate}
+              helperText="Please select your Date"
+            >
+              {dailyDataOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          : <TextField
+              id="standard-select-month"
+              select
+              label="Month"
+              value={currentMonth}
+              onChange={handleChangeMonth}
+              helperText="Please select your Month"
+            >
+              {montlyDataOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+      }
       </Typography>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={800} height={800}>
           <Pie 
-            data={cartsData?.innerChart} 
+            data={(tab === 0) ? chartsData?.innerChart : chartsDataMonth.innerChart} 
             dataKey="value" 
             cx="50%" 
             cy="50%" 
@@ -132,12 +225,12 @@ const  Chart = () => {
             fill="#8884d8" 
             label={renderCustomizedLabel}
             >
-              {(cartsData?.innerChart ?? []).map((_, index) => (
+              {(((tab === 0) ? chartsData?.innerChart : chartsDataMonth?.innerChart) ?? []).map((_, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
           </Pie>
           <Pie 
-            data={cartsData?.outerChart} 
+            data={(tab === 0) ? chartsData?.outerChart : chartsDataMonth.outerChart} 
             dataKey="value" 
             cx="50%" 
             cy="50%" 
@@ -146,7 +239,7 @@ const  Chart = () => {
             fill="#82ca9d" 
             label={renderCustomizedLabelOuter}
           >
-            {(cartsData?.outerChart || []).map((_, index) => (
+            {(((tab === 0) ? chartsData?.outerChart : chartsDataMonth?.outerChart) ?? []).map((_, index) => (
               <Cell 
                 key={`cell-${index}`} 
                 fill={COLORS[index % COLORS.length]} 
