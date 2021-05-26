@@ -119,13 +119,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: 400,
+    height: 500,
   },
 }));
 
 const Home = () => {
-  const { tab, setTab, setOpenModalId } = React.useContext(MainContext);
-  console.log('🚀 ~ file: index.tsx ~ line 109 ~ Home ~ tab', tab);
+  const { setTab, setOpenModalId } = React.useContext(MainContext);
   const handleChange = React.useCallback((newValue: number) => {
     setTab(newValue);
   }, []);

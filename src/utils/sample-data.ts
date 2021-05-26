@@ -47,26 +47,18 @@ export const FAKE_YEAR_DATA: IData[] = [
       { id: 'aqwea1', name: 'breakfast', category: category.food, value: 5 },
       { id: 'ggg331', name: 'house rent', category: category.utilities, value: 1000 },
     ]
-  }
+  },
+  {
+    id: 'rerer22ww',
+    date: '2021-05-04',
+    expense: [
+      { id: 'bb31', name: 'coffee', category: category.food, value: 23.5 },
+      { id: 'aadsdrere1', name: 'breakfast', category: category.food, value: 50 },
+      { id: 'adsdasd1', name: 'metro', category: category.transport, value: 150 },
+      { id: 'aa1dsd4343', name: 'supermarket food', category: category.food, value: 500 },
+      { id: 'ggg3dsd31', name: 'electro', category: category.utilities, value: 100 },
+      { id: 'aa1ddfcdcd', name: 'fitness', category: category.sport, value: 130 },
+      { id: 'aaqffwq1', name: 'cinema', category: category.entertainment, value: 20 },
+    ]
+  },
 ] 
-
-export const data01 = [
-  { name: 'Food', value: 400 },
-  { name: 'Transport', value: 300 },
-  { name: 'Sport', value: 300 },
-  { name: 'Utilities', value: 200 },
-  { name: 'Entertainment', value: 200 },
-];
-export const data02 = [
-  { name: 'A1', value: 100 },
-  { name: 'A2', value: 300 },
-  { name: 'B1', value: 100 },
-  { name: 'B2', value: 80 },
-  { name: 'B3', value: 40 },
-  { name: 'B4', value: 30 },
-  { name: 'B5', value: 50 },
-  { name: 'C1', value: 100 },
-  { name: 'C2', value: 200 },
-  { name: 'D1', value: 150 },
-  { name: 'D2', value: 50 },
-];
